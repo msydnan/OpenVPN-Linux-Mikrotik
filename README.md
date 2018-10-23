@@ -3,3 +3,4 @@ Merupakan Materi dan file untuk konfigurasi OpenVPN di Centos 7 , sesuai yang sa
 Semoga bermanfaat
 
 Teddy Yuliswar
+Untuk Link Video bisa di link youtube berikut : https://youtu.be/k-pWKNYYC9Q
