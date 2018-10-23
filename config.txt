@@ -1,0 +1,25 @@
+yum update -y
+wget http://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+rpm -ivh epel-release-latest-7.noarch.rpm
+yum install openvpn openssl
+
+openssl dhparam -out /etc/openvpn/dh.pem 2048
+
+openssl genrsa -out /etc/openvpn/ca.key 2048
+chmod 600 /etc/openvpn/ca.key
+openssl req -new -key /etc/openvpn/ca.key -out /etc/openvpn/ca.csr -subj /CN=OpenVPN-CA/
+openssl x509 -req -in /etc/openvpn/ca.csr -out /etc/openvpn/ca.crt -signkey /etc/openvpn/ca.key -days 365
+echo 01 > /etc/openvpn/ca.srl
+
+openssl genrsa -out /etc/openvpn/server.key 2048
+chmod 600 /etc/openvpn/server.key
+openssl req -new -key /etc/openvpn/server.key -out /etc/openvpn/server.csr -subj /CN=OpenVPN/
+openssl x509 -req -in /etc/openvpn/server.csr -out /etc/openvpn/server.crt -CA /etc/openvpn/ca.crt -CAkey /etc/openvpn/ca.key -days 365
+
+openssl genrsa -out /etc/openvpn/client.key 2048
+chmod 600 /etc/openvpn/client.key
+openssl req -new -key /etc/openvpn/client.key -out /etc/openvpn/client.csr -subj /CN=OpenVPN-Client/
+openssl x509 -req -in /etc/openvpn/client.csr -out /etc/openvpn/client.crt -CA /etc/openvpn/ca.crt -CAkey /etc/openvpn/ca.key -days 36525
+
+systemctl enable openvpn@server
+systemctl start openvpn@server
